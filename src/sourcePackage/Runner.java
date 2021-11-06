@@ -1,6 +1,7 @@
 package sourcePackage;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
 
 public class Runner {
   public static void main(String args[]) 
@@ -11,6 +12,15 @@ public class Runner {
     System.out.print("password: " + combinedPW.getPassword());
     System.out.println(" | salt: " + combinedPW.getSalt());
     System.out.println("hashed password: " + combinedPW.getSecuredPassword());
+    
+    System.out.println("--------------");
+    HashMap<String, CombinedPassword> database = new HashMap<>();
+    String inputUsername = "testUsername";
+    String inputPassword = "testPassword";
+    storeInput(database, inputUsername, inputPassword);
+    //database.put(inputUsername, new CombinedPassword(inputPassword, getSalt())); //might want to just use this instead of storeInput() that we discussed together
+    System.out.println("map values: " + database.entrySet());
+    System.out.println("Converted hashed password to ascii: " + convertToASCII(combinedPW.getSecuredPassword()));
   }
 
 
@@ -31,4 +41,36 @@ public class Runner {
     }
     return sb.toString();
   }
+  
+  /**
+   * Hashes password combined with salt into database
+   * 
+   * @param database = database to store into
+   * @param username = username just entered from user
+   * @param password = plaintext password entered from user
+   */
+  private static void storeInput(HashMap<String, CombinedPassword> database, String username, String password) {
+
+	  CombinedPassword hashedPassword = new CombinedPassword(password, getSalt());
+	  database.put(username, hashedPassword);
+
+  }
+
+
+  /**
+   * @param input
+   * @return converted input as its ASCII value
+   */
+  private static String convertToASCII(String input) {
+
+	  StringBuilder sb = new StringBuilder();
+	  char[] inputArr = input.toCharArray();
+
+	  for (char ch: inputArr) {
+		  sb.append((int) ch);
+	  }
+
+	  return sb.toString();
+  }
+  
 }
