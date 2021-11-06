@@ -104,16 +104,24 @@ public class Runner {
     else if(input.toLowerCase().equals("login")){
         System.out.println("Please enter your username.");
         String username = in.nextLine();
-        if(database.containsKey(username)){
-            System.out.println("Please enter your password.");
-            String password = in.nextLine();
+        while(!database.containsKey(username)){
+            System.out.println("Username not recognized. Please reenter.");
+            username = in.nextLine();
+        }
+        System.out.println("Please enter your password.");
+        String password = in.nextLine();
+        if(compareInput(database,username,password)){
+            System.out.println("Welcome back!" + username);
 
-            
 
+        }
+        else{
+            System.out.println("Invalid Password");
         }
 
     }
     else{
+        //do something when they don't want to login or register
         
     }
     
