@@ -74,7 +74,7 @@ public class Runner {
 	  return sb.toString();
   }
 
-  public void getUserInput(HashMap database){
+  public void getUserInput(HashMap<String, CombinedPassword> database){
 
     Scanner in = new Scanner(System.in);
     System.out.println("Would you like to login or register?");
@@ -89,7 +89,7 @@ public class Runner {
         System.out.println("Please enter your desired password.");
         String password = in.nextLine();
         CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
-        database.put(username,newUser.getSecuredPassword());
+        database.put(username,newUser);
 
 
 
