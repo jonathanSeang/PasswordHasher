@@ -2,6 +2,7 @@ package sourcePackage;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class Runner {
   public static void main(String args[]) 
@@ -72,5 +73,44 @@ public class Runner {
 
 	  return sb.toString();
   }
+
+  public void getUserInput(HashMap database){
+
+    Scanner in = new Scanner(System.in);
+    System.out.println("Would you like to login or register?");
+    String input = in.nextLine();
+    if(input.toLowerCase().equals("register")){
+        System.out.println("Please enter your desired username.");
+        String username = in.nextLine();
+        while(database.containsKey(username)){
+            System.out.println("Username Taken. Please enter another username.");
+            username = in.nextLine();
+        }
+        System.out.println("Please enter your desired password.");
+        String password = in.nextLine();
+        CombinedPassword newUser = new CombinedPassword(username,password);
+        //database.put(username,asciithing(password));
+
+
+
+    }
+    else if(input.toLowerCase().equals("login")){
+        System.out.println("Please enter your username.");
+        String username = in.nextLine();
+        if(database.containsKey(username)){
+            System.out.println("Please enter your password.");
+            String password = in.nextLine();
+
+            
+
+        }
+
+    }
+    else{
+        
+    }
+    
+}
+
   
 }
