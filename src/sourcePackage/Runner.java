@@ -88,8 +88,8 @@ public class Runner {
         }
         System.out.println("Please enter your desired password.");
         String password = in.nextLine();
-        CombinedPassword newUser = new CombinedPassword(username,password);
-        //database.put(username,asciithing(password));
+        CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
+        database.put(username,newUser.getSecuredPassword());
 
 
 
