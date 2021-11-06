@@ -73,6 +73,13 @@ public class Runner {
 
 	  return sb.toString();
   }
+	
+  public boolean compareInput(HashMap<String, CombinedPassword> database,String username, String inputPassword) {
+	String hashedDatabasePassword = database.get(username).getSecuredPassword();
+		
+	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getSecuredPassword();
+	return hashedDatabasePassword.equals(saltyInputPassword);
+  }
 
   public void getUserInput(HashMap<String, CombinedPassword> database){
 
