@@ -7,21 +7,10 @@ import java.util.Scanner;
 public class Runner {
   public static void main(String args[]) 
   {
-    String salt = getSalt();
-    System.out.println(salt);
-    CombinedPassword combinedPW = new CombinedPassword("password", salt);
-    System.out.print("password: " + combinedPW.getPassword());
-    System.out.println(" | salt: " + combinedPW.getSalt());
-    System.out.println("hashed password: " + combinedPW.getSecuredPassword());
-    
-    System.out.println("--------------");
-    HashMap<String, CombinedPassword> database = new HashMap<>();
-    String inputUsername = "testUsername";
-    String inputPassword = "testPassword";
-    storeInput(database, inputUsername, inputPassword);
-    //database.put(inputUsername, new CombinedPassword(inputPassword, getSalt())); //might want to just use this instead of storeInput() that we discussed together
-    System.out.println("map values: " + database.entrySet());
-    System.out.println("Converted hashed password to ascii: " + convertToASCII(combinedPW.getSecuredPassword()));
+	  
+	  HashMap<String, CombinedPassword> database = new HashMap<>();
+	  getUserInput(database);
+	  
   }
 
 
@@ -74,58 +63,65 @@ public class Runner {
 	  return sb.toString();
   }
 	
-  public boolean compareInput(HashMap<String, CombinedPassword> database,String username, String inputPassword) {
+  public static boolean compareInput(HashMap<String, CombinedPassword> database,String username, String inputPassword) {
 	String hashedDatabasePassword = database.get(username).getSecuredPassword();
 		
 	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getSecuredPassword();
 	return hashedDatabasePassword.equals(saltyInputPassword);
   }
 
-  public void getUserInput(HashMap<String, CombinedPassword> database){
+  public static void getUserInput(HashMap<String, CombinedPassword> database){
 
-    Scanner in = new Scanner(System.in);
-    System.out.println("Would you like to login or register?");
-    String input = in.nextLine();
-    if(input.toLowerCase().equals("register")){
-        System.out.println("Please enter your desired username.");
-        String username = in.nextLine();
-        while(database.containsKey(username)){
-            System.out.println("Username Taken. Please enter another username.");
-            username = in.nextLine();
-        }
-        System.out.println("Please enter your desired password.");
-        String password = in.nextLine();
-        CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
-        database.put(username,newUser);
+	  while  (true) {
 
-
-
-    }
-    else if(input.toLowerCase().equals("login")){
-        System.out.println("Please enter your username.");
-        String username = in.nextLine();
-        while(!database.containsKey(username)){
-            System.out.println("Username not recognized. Please reenter.");
-            username = in.nextLine();
-        }
-        System.out.println("Please enter your password.");
-        String password = in.nextLine();
-        if(compareInput(database,username,password)){
-            System.out.println("Welcome back!" + username);
+		  Scanner in = new Scanner(System.in);
+		  System.out.println("Would you like to login or register?");
+		  String input = in.nextLine();
+		  if(input.toLowerCase().equals("register")){
+			  System.out.println("Please enter your desired username.");
+			  String username = in.nextLine();
+			  while(database.containsKey(username)){
+				  System.out.println("Username Taken. Please enter another username.");
+				  username = in.nextLine();
+			  }
+			  System.out.println("Please enter your desired password.");
+			  String password = in.nextLine();
+			  CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
+			  database.put(username,newUser);
 
 
-        }
-        else{
-            System.out.println("Invalid Password");
-        }
 
-    }
-    else{
-        //do something when they don't want to login or register
-        
-    }
-    
-}
+		  }
+		  else if(input.toLowerCase().equals("login")){
+			  System.out.println("Please enter your username.");
+			  String username = in.nextLine();
+			  while(!database.containsKey(username)){
+				  System.out.println("Username not recognized. Please reenter.");
+				  username = in.nextLine();
+			  }
+			  System.out.println("Please enter your password.");
+			  String password = in.nextLine();
+			  if(compareInput(database,username,convertToASCII(password))){
+				  System.out.println("Welcome back!" + username);
+
+
+			  }
+			  else{
+				  System.out.println("Invalid Password");
+			  }
+
+		  }
+		  else{
+			  //do something when they don't want to login or register
+
+		  }
+
+		  System.out.println(database);
+		  
+	  }
+
+
+  }
 
   
 }
