@@ -3,6 +3,8 @@ package sourcePackage;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.*;
+
 
 public class Runner {
   public static void main(String args[]) 
@@ -69,6 +71,34 @@ public class Runner {
 	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getSecuredPassword();
 	return hashedDatabasePassword.equals(saltyInputPassword);
   }
+	
+// Check for special character, length, and upper case letter with regex class
+  public static boolean checkValidPassword(String password) {
+	  
+	  /*
+	   * Check for
+	   * 1. numbers
+	   * 2. uppercase letter
+	   * 3. special character
+	   * 3. length between 8 and 20
+	   */
+	  String regex = "^(?=.*[0-9])"
+              + "(?=.*[A-Z])"
+              + "(?=.*[!@#$%^&*()-_=+\\\\|[{]};:'\\\",<.>/?])"
+              + "(?=\\S+$).{8,20}$";
+	  
+	  // Compile regex
+      Pattern p = Pattern.compile(regex);
+
+	  if (password == null) {
+          return false;
+      }
+	  
+	  // matcher() checks if the param password contains conditions
+	  Matcher m = p.matcher(password);
+	  
+	  return m.matches();
+  }
 
   public static void getUserInput(HashMap<String, CombinedPassword> database){
 
@@ -86,8 +116,23 @@ public class Runner {
 			  }
 			  System.out.println("Please enter your desired password.");
 			  String password = in.nextLine();
-			  CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
-			  database.put(username,newUser);
+			  // New method to check password length and characters
+			  if(checkValidPassword(password)) {
+				  CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
+				  database.put(username,newUser);
+				  System.out.println("Successfully registered: " + username);
+			  }
+			  
+			  else {
+				  System.out.println("Invalid Desired Password ");
+				  System.out.println("Your desired password needs to contain: ");
+				  System.out.println("1. A special character. ");
+				  System.out.println("2. An uppercase letter. ");
+				  System.out.println("3. A number. ");
+				  System.out.print("4. And between 8 and 20 characters.");
+
+
+			  }
 
 
 
