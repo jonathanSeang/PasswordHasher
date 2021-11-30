@@ -121,6 +121,7 @@ public class Runner {
 				  System.out.println("2. An uppercase letter. ");
 				  System.out.println("3. A number. ");
 				  System.out.println("4. And between 8 and 20 characters.");
+				  System.out.println("Please reenter your desired password.");
 				  password = in.nextLine();
 				  
 				  
