@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.*;
 
-
 public class Runner {
   public static void main(String args[]) 
   {
@@ -71,8 +70,8 @@ public class Runner {
 	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getSecuredPassword();
 	return hashedDatabasePassword.equals(saltyInputPassword);
   }
-	
-// Check for special character, length, and upper case letter with regex class
+  
+  // Check for special character, length, and upper case letter with regex class
   public static boolean checkValidPassword(String password) {
 	  
 	  /*
@@ -116,25 +115,20 @@ public class Runner {
 			  }
 			  System.out.println("Please enter your desired password.");
 			  String password = in.nextLine();
-			  // New method to check password length and characters
-			  if(checkValidPassword(password)) {
-				  CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
-				  database.put(username,newUser);
-				  System.out.println("Successfully registered: " + username);
-			  }
-			  
-			  else {
-				  System.out.println("Invalid Desired Password ");
+			  while(!checkValidPassword(password)) {
 				  System.out.println("Your desired password needs to contain: ");
 				  System.out.println("1. A special character. ");
 				  System.out.println("2. An uppercase letter. ");
 				  System.out.println("3. A number. ");
-				  System.out.print("4. And between 8 and 20 characters.");
-
-
+				  System.out.println("4. And between 8 and 20 characters.");
+				  password = in.nextLine();
+				  
+				  
 			  }
-
-
+			
+			  CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
+			  database.put(username,newUser);
+			  System.out.println("Successfully registered: " + username);
 
 		  }
 		  else if(input.toLowerCase().equals("login")){
