@@ -2,52 +2,50 @@ package sourcePackage;
 
 import java.security.MessageDigest;
 
+//stores password (after salting and hashing) with salt into single object
 public class CombinedPassword {
-  private String password;
-  private String salt;
+	private String password;
+	private String salt;
 
-  public CombinedPassword(String password, String salt){
-    this.password = password;
-    this.salt = salt;
-  }
+	public CombinedPassword(String password, String salt){
+		this.password = getSecuredPassword(password, salt);
+		this.salt = salt;
+	}
 
+	public String getPassword() {
+		return this.password;
+	}
 
-  public String getPassword() {
-    return this.password;
-  }
+	public String getSalt() {
+		return this.salt;
+	}
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+	/**
+	 * Combines plaintext password and salt, then returns hashed value to be stored
+	 * 
+	 * @param inputPassword, inputSalt
+	 * @return
+	 */
+	private String getSecuredPassword(String inputPassword, String inputSalt) {
+		String hashedPassword;
 
-  public String getSalt() {
-    return this.salt;
-  }
+		try{
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(inputSalt.getBytes());
+			byte[] bytes = md.digest(inputPassword.getBytes());
 
-  public void setSalt(String salt) {
-    this.salt = salt;
-  }
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < bytes.length; i++) {
+				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			hashedPassword = sb.toString();
 
-  public String getSecuredPassword() {
-    String hashedPassword;
+			return hashedPassword;
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 
-    try{
-      MessageDigest md = MessageDigest.getInstance("SHA-256");
-      md.update(salt.getBytes());
-      byte[] bytes = md.digest(password.getBytes());
-
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < bytes.length; i++) {
-        sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-      }
-      hashedPassword = sb.toString();
-    
-      return hashedPassword;
-    } 
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-    
-  }
+	}
 }

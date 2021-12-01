@@ -32,20 +32,6 @@ public class Runner {
     }
     return sb.toString();
   }
-  
-  /**
-   * Hashes password combined with salt into database
-   * 
-   * @param database = database to store into
-   * @param username = username just entered from user
-   * @param password = plaintext password entered from user
-   */
-  private static void storeInput(HashMap<String, CombinedPassword> database, String username, String password) {
-
-	  CombinedPassword hashedPassword = new CombinedPassword(password, getSalt());
-	  database.put(username, hashedPassword);
-
-  }
 
 
   /**
@@ -65,9 +51,9 @@ public class Runner {
   }
 	
   public static boolean compareInput(HashMap<String, CombinedPassword> database,String username, String inputPassword) {
-	String hashedDatabasePassword = database.get(username).getSecuredPassword();
+	String hashedDatabasePassword = database.get(username).getPassword();
 		
-	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getSecuredPassword();
+	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getPassword();
 	return hashedDatabasePassword.equals(saltyInputPassword);
   }
   
