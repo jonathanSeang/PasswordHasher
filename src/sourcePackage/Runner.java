@@ -2,6 +2,8 @@ package sourcePackage;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.*;
 
@@ -12,6 +14,47 @@ public class Runner {
 	  HashMap<String, CombinedPassword> database = new HashMap<>();
 	  getUserInput(database);
 	  
+	  
+	  System.out.println("\nVulnerable_user is created and has an unsalted password.\n");
+	   //Dummy user created to show a rainbow table attack works without salt
+	  database.put("Vulnerable_user", new CombinedPassword("Password1!",""));
+	  
+	  database.get("Vulnerable_user").getPassword();
+	  System.out.println("Vulnerable_user's plaintext password: Password1!");
+	  System.out.println("Vulnerable_user's hashed password: " + database.get("Vulnerable_user").getPassword());
+	  
+	  RainbowTable rb = new RainbowTable();
+	  
+	  rb.addPassword("Password1!");
+	  rb.addPassword("AbCd1234!");
+	  rb.addPassword("*Alec1234*");
+	  rb.addPassword("(SecureP4ssword)");
+	  rb.addPassword("L3tM3In?");
+	  rb.createRainbowTable();
+	  
+	  System.out.println("\nRainbow table values");
+
+	  
+	  for(int i = 0; i < rb.getRainbowTable().size(); i++) {
+		  System.out.println(rb.getPlainPasswords().get(i) + ":" + " " + rb.getRainbowTable().get(i));
+
+	  }
+	  
+     Iterator databaseIterator = database.entrySet().iterator();
+     int foundPasswords = 0;
+     while (databaseIterator.hasNext()) {
+         Map.Entry combinedPassword = (Map.Entry)databaseIterator.next();
+         CombinedPassword saltHashedPassword = (CombinedPassword) combinedPassword.getValue();
+                   
+         if(rb.getRainbowTable().contains(saltHashedPassword.getPassword())) {
+       	  System.out.println("\nPassword matched: " + saltHashedPassword.getPassword());
+       	  foundPasswords++;
+         }
+     }
+     if(foundPasswords == 0)
+         System.out.println("\nNo passwords found.");
+
+     System.out.println("\nEnd of program.");
   }
 
 
@@ -32,20 +75,6 @@ public class Runner {
     }
     return sb.toString();
   }
-  
-  /**
-   * Hashes password combined with salt into database
-   * 
-   * @param database = database to store into
-   * @param username = username just entered from user
-   * @param password = plaintext password entered from user
-   */
-  private static void storeInput(HashMap<String, CombinedPassword> database, String username, String password) {
-
-	  CombinedPassword hashedPassword = new CombinedPassword(password, getSalt());
-	  database.put(username, hashedPassword);
-
-  }
 
 
   /**
@@ -65,9 +94,9 @@ public class Runner {
   }
 	
   public static boolean compareInput(HashMap<String, CombinedPassword> database,String username, String inputPassword) {
-	String hashedDatabasePassword = database.get(username).getSecuredPassword();
+	String hashedDatabasePassword = database.get(username).getPassword();
 		
-	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getSecuredPassword();
+	String saltyInputPassword = new CombinedPassword(inputPassword, database.get(username).getSalt()).getPassword();
 	return hashedDatabasePassword.equals(saltyInputPassword);
   }
   
@@ -129,6 +158,7 @@ public class Runner {
 			
 			  CombinedPassword newUser = new CombinedPassword(convertToASCII(password), getSalt());
 			  database.put(username,newUser);
+			  System.out.println(newUser.getPassword());
 			  System.out.println("Successfully registered: " + username);
 
 		  }
@@ -142,7 +172,8 @@ public class Runner {
 			  System.out.println("Please enter your password.");
 			  String password = in.nextLine();
 			  if(compareInput(database,username,convertToASCII(password))){
-				  System.out.println("Welcome back!" + username);
+				  System.out.println("Welcome back!\n" + username);
+
 
 
 			  }
@@ -151,12 +182,11 @@ public class Runner {
 			  }
 
 		  }
-		  else{
-			  //do something when they don't want to login or register
-
+		  else if(input.toLowerCase().equals("exit")) {
+			  break;
 		  }
 
-		  System.out.println(database);
+		  //System.out.println(database);
 		  
 	  }
 
